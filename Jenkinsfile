@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven_Home' // Nombre de la herramienta Maven configurada en Jenkins
+        maven 'Maven_Home'
     }
     stages {
         stage('Clone Repository') {
@@ -11,22 +11,49 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                dir('sistema-gestion-inmobiliaria/Backend') { // Cambiar al subdirectorio correcto
-                    bat 'mvn test' // Ejecutar Maven desde el subdirectorio
+                dir('sistema-gestion-inmobiliaria/Backend') {
+                    bat 'mvn test'
+                }
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('SonarQube') {
+                        bat 'mvn clean verify sonar:sonar'
+                    }
                 }
             }
         }
         stage('Build') {
             steps {
-                dir('sistema-gestion-inmobiliaria/Backend') { // Asegúrate de estar en el subdirectorio correcto
-                    bat 'mvn clean package' // Comando de construcción
+                dir('sistema-gestion-inmobiliaria/Backend') {
+                    bat 'mvn clean package'
                 }
             }
         }
-        stage('Deploy') {
+        stage('Generate Allure Report') {
             steps {
-                // Agrega tu lógica de despliegue aquí
-                echo 'Despliegue iniciado'
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    reportBuildPolicy: 'ALWAYS',
+                    results: [[path: 'target/allure-results']]
+                ])
+            }
+        }
+        stage('Docker Build and Deploy') {
+            steps {
+                script {
+                    // Nombre de la imagen Docker
+                    def imageName = 'sistema-gestion-inmobiliaria'
+                    
+                    // Construir la imagen Docker
+                    bat "docker build -t ${imageName} ."
+                    
+                    // Ejecutar el contenedor en Docker
+                    bat "docker run -d -p 8082:8082 --name ${imageName}_container ${imageName}"
+                }
             }
         }
     }
