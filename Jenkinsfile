@@ -3,6 +3,9 @@ pipeline {
     tools {
         maven 'Maven_Home' // Nombre de la herramienta Maven configurada en Jenkins
     }
+    environment {
+        SONAR_TOKEN = credentials('sonar-token')  // Aquí se usa el ID de la credencial que creaste
+    }
     stages {
         stage('Clone Repository') {
             steps {
@@ -12,8 +15,10 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 dir('sistema-gestion-inmobiliaria/Backend') { // Cambia al subdirectorio donde está el pom.xml
-                    withSonarQubeEnv('SonarQube') {
-                        bat 'mvn clean verify sonar:sonar' // Ejecuta el análisis de SonarQube
+                    script {
+                        withSonarQubeEnv('SonarQube') {
+                            bat "mvn clean verify sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
+                        }
                     }
                 }
             }
