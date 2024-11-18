@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Propiedades</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .property-form, .property-list {
+      margin: 20px auto;
+      max-width: 600px;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .property-form h2, .property-list h2 {
+      color: #34495e;
+    }
+    .property-form input, .property-form select, .property-form button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .property-form button {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      cursor: pointer;
+    }
+    .property-form button:hover {
+      background-color: #34495e;
+    }
+    .property-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    .property-list li {
+      background: #ecf0f1;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .property-list button {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .property-list button:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gestión de Propiedades</h1>
+  
+  <!-- Formulario para agregar/editar inmuebles -->
+  <div class="property-form">
+    <h2>Agregar/Editar Propiedad</h2>
+    <form id="propertyForm">
+      <input type="hidden" id="propertyId" value="">
+      <input type="text" id="address" placeholder="Dirección" required>
+      <input type="number" id="price" placeholder="Precio" required>
+      <select id="isAvailable" required>
+        <option value="" disabled selected>¿Disponible?</option>
+        <option value="true">Sí</option>
+        <option value="false">No</option>
+      </select>
+      <button type="submit">Guardar</button>
+    </form>
+  </div>
+
+  <!-- Lista de inmuebles -->
+  <div class="property-list">
+    <h2>Listado de Propiedades</h2>
+    <ul id="propertyList"></ul>
+  </div>
+
+  <script>
+    const propertyForm = document.getElementById('propertyForm');
+    const propertyList = document.getElementById('propertyList');
+
+    const apiUrl = 'http://localhost:8080/api/properties';
+
+    // Cargar todas las propiedades al inicio
+    async function loadProperties() {
+      try {
+        const response = await fetch(apiUrl);
+        const properties = await response.json();
+        propertyList.innerHTML = '';
+        properties.forEach(property => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            ${property.address} - $${property.price} - ${property.isAvailable ? 'Disponible' : 'No disponible'}
+            <button onclick="deleteProperty(${property.id})">Eliminar</button>
+            <button onclick="editProperty(${property.id}, '${property.address}', ${property.price}, ${property.isAvailable})">Editar</button>
+          `;
+          propertyList.appendChild(li);
+        });
+      } catch (error) {
+        alert('Error cargando propiedades');
+      }
+    }
+
+    // Guardar o actualizar una propiedad
+    propertyForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const id = document.getElementById('propertyId').value;
+      const address = document.getElementById('address').value;
+      const price = parseFloat(document.getElementById('price').value);
+      const isAvailable = document.getElementById('isAvailable').value === 'true';
+
+      const property = { address, price, isAvailable };
+
+      try {
+        const response = id 
+          ? await fetch(`${apiUrl}/${id}`, { 
+              method: 'PUT', 
+              headers: { 'Content-Type': 'application/json' }, 
+              body: JSON.stringify(property) 
+            })
+          : await fetch(apiUrl, { 
+              method: 'POST', 
+              headers: { 'Content-Type': 'application/json' }, 
+              body: JSON.stringify(property) 
+            });
+
+        if (response.ok) {
+          alert(id ? 'Propiedad actualizada' : 'Propiedad creada');
+          propertyForm.reset();
+          loadProperties();
+        } else {
+          alert('Error guardando propiedad');
+        }
+      } catch (error) {
+        alert('Error al conectar con el servidor');
+      }
+    });
+
+    // Eliminar una propiedad
+    async function deleteProperty(id) {
+      if (!confirm('¿Deseas eliminar esta propiedad?')) return;
+
+      try {
+        const response = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+          alert('Propiedad eliminada');
+          loadProperties();
+        } else {
+          alert('Error eliminando propiedad');
+        }
+      } catch (error) {
+        alert('Error al conectar con el servidor');
+      }
+    }
+
+    // Editar una propiedad
+    function editProperty(id, address, price, isAvailable) {
+      document.getElementById('propertyId').value = id;
+      document.getElementById('address').value = address;
+      document.getElementById('price').value = price;
+      document.getElementById('isAvailable').value = isAvailable.toString();
+    }
+
+    // Inicializar
+    loadProperties();
+  </script>
+</body>
+</html>

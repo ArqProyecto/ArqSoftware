@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inmobiliaria - Home</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .action {
+      margin-bottom: 20px;
+    }
+    input, button, select {
+      margin: 5px 0;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #2c3e50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #34495e;
+    }
+    .response {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #ecf0f1;
+      border-radius: 4px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gestión de Arrendamientos</h1>
+
+    <!-- Ver todos los arrendamientos -->
+    <div class="action">
+      <h2>Ver Todos los Arrendamientos</h2>
+      <button id="viewLeasesBtn">Mostrar Arrendamientos</button>
+      <div class="response" id="allLeases"></div>
+    </div>
+
+    <!-- Buscar arrendamiento por ID -->
+    <div class="action">
+      <h2>Buscar Arrendamiento por ID</h2>
+      <input type="number" id="leaseId" placeholder="Ingrese el ID del arrendamiento">
+      <button id="searchLeaseBtn">Buscar</button>
+      <div class="response" id="leaseDetails"></div>
+    </div>
+
+    <!-- Crear nuevo arrendamiento -->
+    <div class="action">
+      <h2>Crear Nuevo Arrendamiento</h2>
+      <input type="text" id="tenantId" placeholder="ID del Inquilino">
+      <input type="text" id="propertyId" placeholder="ID de la Propiedad">
+      <input type="date" id="startDate" placeholder="Fecha de Inicio">
+      <input type="date" id="endDate" placeholder="Fecha de Fin">
+      <input type="number" step="0.01" id="rentAmount" placeholder="Monto del Alquiler">
+      <button id="createLeaseBtn">Crear Arrendamiento</button>
+      <div class="response" id="createLeaseResponse"></div>
+    </div>
+
+    <!-- Eliminar arrendamiento por ID -->
+    <div class="action">
+      <h2>Eliminar Arrendamiento por ID</h2>
+      <input type="number" id="deleteLeaseId" placeholder="Ingrese el ID del arrendamiento">
+      <button id="deleteLeaseBtn">Eliminar</button>
+      <div class="response" id="deleteLeaseResponse"></div>
+    </div>
+  </div>
+
+  <script>
+    // Botón: Ver todos los arrendamientos
+    document.getElementById('viewLeasesBtn').addEventListener('click', async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/leases');
+        const leases = await response.json();
+        document.getElementById('allLeases').textContent = JSON.stringify(leases, null, 2);
+      } catch (error) {
+        document.getElementById('allLeases').textContent = 'Error al obtener los arrendamientos.';
+      }
+    });
+
+    // Botón: Buscar arrendamiento por ID
+    document.getElementById('searchLeaseBtn').addEventListener('click', async () => {
+      const leaseId = document.getElementById('leaseId').value;
+      if (!leaseId) return alert('Por favor, ingrese un ID válido.');
+      try {
+        const response = await fetch(`http://localhost:8080/api/leases/${leaseId}`);
+        const lease = await response.json();
+        document.getElementById('leaseDetails').textContent = JSON.stringify(lease, null, 2);
+      } catch (error) {
+        document.getElementById('leaseDetails').textContent = 'No se encontró el arrendamiento.';
+      }
+    });
+
+    // Botón: Crear nuevo arrendamiento
+    document.getElementById('createLeaseBtn').addEventListener('click', async () => {
+      const tenantId = document.getElementById('tenantId').value;
+      const propertyId = document.getElementById('propertyId').value;
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      const rentAmount = document.getElementById('rentAmount').value;
+
+      if (!tenantId || !propertyId || !startDate || !endDate || !rentAmount) {
+        return alert('Por favor, complete todos los campos.');
+      }
+
+      try {
+        const response = await fetch('http://localhost:8080/api/leases', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tenant: { id: tenantId }, property: { id: propertyId }, startDate, endDate, rentAmount }),
+        });
+        const newLease = await response.json();
+        document.getElementById('createLeaseResponse').textContent = `Arrendamiento creado: ${JSON.stringify(newLease, null, 2)}`;
+      } catch (error) {
+        document.getElementById('createLeaseResponse').textContent = 'Error al crear el arrendamiento.';
+      }
+    });
+
+    // Botón: Eliminar arrendamiento por ID
+    document.getElementById('deleteLeaseBtn').addEventListener('click', async () => {
+      const leaseId = document.getElementById('deleteLeaseId').value;
+      if (!leaseId) return alert('Por favor, ingrese un ID válido.');
+      try {
+        const response = await fetch(`http://localhost:8080/api/leases/${leaseId}`, { method: 'DELETE' });
+        document.getElementById('deleteLeaseResponse').textContent = response.ok
+          ? 'Arrendamiento eliminado con éxito.'
+          : 'No se pudo eliminar el arrendamiento.';
+      } catch (error) {
+        document.getElementById('deleteLeaseResponse').textContent = 'Error al eliminar el arrendamiento.';
+      }
+    });
+  </script>
+</body>
+</html>
