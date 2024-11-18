@@ -4,6 +4,9 @@ import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.business.Notificati
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.dataaccess.NotificationRepository;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.Notification;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.User;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,6 +59,8 @@ public class NotificationServiceTest {
     }
 
     @Test
+    @Description("Test para obtener todas las notificaciones de un usuario")
+    @Step("Obtener notificaciones para el usuario con ID {0}")
     public void testGetNotificationsForUser() {
         // Definir el comportamiento del mock para el repositorio
         when(notificationRepository.findByUserId(user.getId())).thenReturn(Arrays.asList(notification1, notification2));
@@ -69,9 +75,14 @@ public class NotificationServiceTest {
 
         // Verificar que el repositorio fue llamado
         verify(notificationRepository, times(1)).findByUserId(user.getId());
+        
+        // Registrar paso en Allure
+        Allure.step("Notificaciones obtenidas correctamente para el usuario.");
     }
 
     @Test
+    @Description("Test para enviar notificaciones pendientes")
+    @Step("Enviar notificaciones pendientes")
     public void testSendPendingNotifications() {
         // Definir el comportamiento del mock para el repositorio
         when(notificationRepository.findNotificationsToSend(any(LocalDateTime.class)))
@@ -86,5 +97,8 @@ public class NotificationServiceTest {
 
         // Verificar que el repositorio fue llamado para guardar las notificaciones
         verify(notificationRepository, times(2)).save(any(Notification.class));
+        
+        // Registrar paso en Allure
+        Allure.step("Notificaciones pendientes enviadas correctamente y su estado actualizado.");
     }
 }

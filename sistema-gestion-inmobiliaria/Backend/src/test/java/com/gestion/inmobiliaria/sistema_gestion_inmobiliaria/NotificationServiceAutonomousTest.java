@@ -1,10 +1,12 @@
 package com.gestion.inmobiliaria.sistema_gestion_inmobiliaria;
 
-
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.business.NotificationService;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.dataaccess.NotificationRepository;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.Notification;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.User;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -57,6 +59,8 @@ public class NotificationServiceAutonomousTest {
     }
 
     @Test
+    @Description("Prueba para obtener las notificaciones de un usuario")
+    @Step("Obtenemos las notificaciones pendientes para el usuario")
     void testGetNotificationsForUser() {
         // Simulamos que el repository devuelve las notificaciones del usuario
         when(notificationRepository.findByUserId(user.getId())).thenReturn(Arrays.asList(notification1, notification2));
@@ -72,9 +76,13 @@ public class NotificationServiceAutonomousTest {
 
         // Verificamos que el método repository fue llamado una vez
         verify(notificationRepository, times(1)).findByUserId(user.getId());
+
+        Allure.step("Notificaciones obtenidas correctamente para el usuario.");
     }
 
     @Test
+    @Description("Prueba para enviar notificaciones pendientes")
+    @Step("Enviamos notificaciones pendientes")
     void testSendPendingNotifications() {
         // Simulamos que existen notificaciones pendientes
         when(notificationRepository.findNotificationsToSend(any())).thenReturn(Arrays.asList(notification1, notification2));
@@ -88,5 +96,7 @@ public class NotificationServiceAutonomousTest {
 
         // Verificamos que el método save fue llamado correctamente
         verify(notificationRepository, times(2)).save(any(Notification.class));
+
+        Allure.step("Estado de las notificaciones actualizado a 'SENT'.");
     }
 }

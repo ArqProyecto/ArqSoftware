@@ -5,6 +5,8 @@ import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.dataaccess.LeaseRep
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.Lease;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.User;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.Property;
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -44,6 +46,8 @@ public class LeaseServiceTest {
     }
 
     @Test
+    @Description("Test para guardar un arrendamiento")
+    @Step("Se guarda un arrendamiento y se verifica que el monto de renta sea correcto")
     public void testSaveLease() {
         // Simula el comportamiento de 'save' en el repositorio
         when(leaseRepository.save(any(Lease.class))).thenReturn(lease);
@@ -60,6 +64,8 @@ public class LeaseServiceTest {
     }
 
     @Test
+    @Description("Test para obtener todos los arrendamientos")
+    @Step("Se obtienen todos los arrendamientos y se verifica que la lista no esté vacía")
     public void testGetAllLeases() {
         // Simula el comportamiento de 'findAll' en el repositorio
         List<Lease> leases = Arrays.asList(lease);
@@ -78,6 +84,8 @@ public class LeaseServiceTest {
     }
 
     @Test
+    @Description("Test para obtener un arrendamiento por ID")
+    @Step("Se obtiene un arrendamiento por su ID y se verifica que el ID coincida")
     public void testGetLeaseById() {
         // Simula el comportamiento de 'findById' en el repositorio
         when(leaseRepository.findById(anyLong())).thenReturn(Optional.of(lease));
@@ -94,6 +102,8 @@ public class LeaseServiceTest {
     }
 
     @Test
+    @Description("Test para obtener un arrendamiento que no existe por ID")
+    @Step("Se intenta obtener un arrendamiento por un ID inexistente y se verifica que el resultado sea nulo")
     public void testGetLeaseByIdNotFound() {
         // Simula el comportamiento de 'findById' cuando no se encuentra el arrendamiento
         when(leaseRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -109,6 +119,8 @@ public class LeaseServiceTest {
     }
 
     @Test
+    @Description("Test para eliminar un arrendamiento por ID")
+    @Step("Se elimina un arrendamiento por su ID y se verifica que el método deleteById haya sido llamado")
     public void testDeleteLeaseById() {
         // Simula el comportamiento de 'deleteById' en el repositorio (sin hacer nada al eliminar)
         doNothing().when(leaseRepository).deleteById(anyLong());

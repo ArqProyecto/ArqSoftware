@@ -5,6 +5,9 @@ import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.Lease;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.User;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.Property;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.dataaccess.LeaseRepository;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -48,6 +51,8 @@ public class LeaseServiceAutonomousTest {
     }
 
     @Test
+    @Description("Test para guardar un arrendamiento")
+    @Step("Guardar arrendamiento en el repositorio")
     public void testSaveLease() {
         when(leaseRepository.save(lease)).thenReturn(lease);
 
@@ -56,9 +61,12 @@ public class LeaseServiceAutonomousTest {
         assertNotNull(savedLease);
         assertEquals(lease.getId(), savedLease.getId());
         verify(leaseRepository, times(1)).save(lease);  // Verifica que save se haya llamado una vez
+        Allure.step("Arrendamiento guardado correctamente.");
     }
 
     @Test
+    @Description("Test para obtener todos los arrendamientos")
+    @Step("Obtener todos los arrendamientos")
     public void testGetAllLeases() {
         when(leaseRepository.findAll()).thenReturn(Arrays.asList(lease));
 
@@ -68,9 +76,12 @@ public class LeaseServiceAutonomousTest {
         assertEquals(1, leases.size());
         assertEquals(lease.getId(), leases.get(0).getId());
         verify(leaseRepository, times(1)).findAll();  // Verifica que findAll se haya llamado una vez
+        Allure.step("Se obtuvieron todos los arrendamientos correctamente.");
     }
 
     @Test
+    @Description("Test para obtener un arrendamiento por ID")
+    @Step("Obtener arrendamiento por ID")
     public void testGetLeaseById() {
         when(leaseRepository.findById(1L)).thenReturn(Optional.of(lease));
 
@@ -79,9 +90,12 @@ public class LeaseServiceAutonomousTest {
         assertNotNull(foundLease);
         assertEquals(lease.getId(), foundLease.getId());
         verify(leaseRepository, times(1)).findById(1L);  // Verifica que findById se haya llamado una vez
+        Allure.step("Arrendamiento encontrado por ID.");
     }
 
     @Test
+    @Description("Test cuando no se encuentra un arrendamiento por ID")
+    @Step("Intentar obtener un arrendamiento por ID que no existe")
     public void testGetLeaseByIdNotFound() {
         when(leaseRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -89,14 +103,18 @@ public class LeaseServiceAutonomousTest {
 
         assertNull(foundLease);
         verify(leaseRepository, times(1)).findById(1L);  // Verifica que findById se haya llamado una vez
+        Allure.step("No se encontró el arrendamiento por ID.");
     }
 
     @Test
+    @Description("Test para eliminar un arrendamiento por ID")
+    @Step("Eliminar arrendamiento por ID")
     public void testDeleteLeaseById() {
         doNothing().when(leaseRepository).deleteById(1L);
 
         leaseService.deleteLeaseById(1L);
 
         verify(leaseRepository, times(1)).deleteById(1L);  // Verifica que deleteById se haya llamado una vez
+        Allure.step("Arrendamiento eliminado correctamente por ID.");
     }
 }
