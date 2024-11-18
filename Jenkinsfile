@@ -1,29 +1,40 @@
 pipeline {
     agent any
-    
+
     stages {
         stage('Clone Repository') {
             steps {
-                // Clona el repositorio
-                git branch: 'main', url: 'https://github.com/ArqProyecto/ArqSoftware.git'
+                script {
+                    // Usamos la herramienta Git instalada
+                    git branch: 'main', url: 'https://github.com/ArqProyecto/ArqSoftware.git'
+                }
             }
         }
         stage('Run Tests') {
             steps {
-                // Ejecuta pruebas (ajusta el comando según tu proyecto)
-                sh 'mvn test' // Cambia esto si no usas Maven
+                script {
+                    // Ejecutar comandos de prueba compatibles con Windows
+                    bat 'echo Running Tests...'
+                    bat 'mvn test' // Reemplázalo según tu herramienta de pruebas
+                }
             }
         }
         stage('Build') {
             steps {
-                // Construye el proyecto
-                sh 'mvn package' // Cambia esto según el sistema de construcción
+                script {
+                    // Construcción del proyecto
+                    bat 'echo Building Project...'
+                    bat 'mvn package' // Reemplázalo según tu herramienta de construcción
+                }
             }
         }
         stage('Deploy') {
             steps {
-                // Simula el despliegue
-                echo 'Desplegando aplicación...'
+                script {
+                    // Implementación
+                    bat 'echo Deploying Application...'
+                    // Agrega aquí los pasos necesarios para el despliegue
+                }
             }
         }
     }
