@@ -39,20 +39,26 @@ pipeline {
         }
         stage('Docker Build and Deploy') {
             steps {
-                dir('sistema-gestion-inmobiliaria/Backend') { // Cambia al subdirectorio para construir y desplegar
+                dir('sistema-gestion-inmobiliaria/Backend') {
                     echo 'Docker Build and Deploy started'
                     script {
-                        // Nombre de la imagen Docker
                         def imageName = 'sistema-gestion-inmobiliaria'
+                        def containerName = "${imageName}_container"
+                        
+                        // Eliminar el contenedor si ya existe
+                        bat """
+                        docker ps -a -q --filter "name=${containerName}" | findstr . && docker rm -f ${containerName} || echo "No container to remove"
+                        """
                         
                         // Construir la imagen Docker
                         bat "docker build -t ${imageName} ."
                         
                         // Ejecutar el contenedor en Docker
-                        bat "docker run -d -p 8082:8082 --name ${imageName}_container ${imageName}"
+                        bat "docker run -d -p 8082:8082 --name ${containerName} ${imageName}"
                     }
                 }
             }
         }
+
     }
 }
