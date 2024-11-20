@@ -1,5 +1,7 @@
 package com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,17 +11,32 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Relación con el contrato de arrendamiento (Solo mandamos el ID en el JSON)
     @ManyToOne
-    @JoinColumn(name = "lease_id", nullable = false) // Relación con el contrato de arrendamiento
-    private Lease lease; // El pago está asociado a un contrato de arrendamiento
+    @JoinColumn(name = "lease_id", nullable = false)
+    @JsonIgnore  // Ignorar este campo cuando se serializa a JSON
+    private Lease lease;
 
+    // Relación con el usuario (Solo mandamos el ID en el JSON)
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // Relación con el usuario que realiza el pago
-    private User user; // El usuario que realiza el pago
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore  // Ignorar este campo cuando se serializa a JSON
+    private User user;
 
     private double amount;
-    private String paymentMethod; // Ejemplo: "Tarjeta", "Transferencia", etc.
-    private String status; // Estado del pago (ejemplo: "Pendiente", "Completado")
+    private String paymentMethod;
+    private String status;
+
+    // Para serializar el 'userId' y 'leaseId' al JSON
+    @JsonProperty("userId")  // Renombrar la propiedad para enviar solo el ID
+    public Long getUserId() {
+        return user != null ? user.getId() : null;  // Devuelve solo el ID del usuario
+    }
+
+    @JsonProperty("leaseId")  // Renombrar la propiedad para enviar solo el ID
+    public Long getLeaseId() {
+        return lease != null ? lease.getId() : null;  // Devuelve solo el ID del lease
+    }
 
     // Constructor vacío (requerido para frameworks de persistencia)
     public Payment() {}

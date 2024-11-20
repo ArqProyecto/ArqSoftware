@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -18,13 +15,16 @@ public class Lease {
 
     @ManyToOne
     @JoinColumn(name = "tenant_id", nullable = false) // Relación con la entidad User
-    private User tenant; // El inquilino es una entidad User
+    @JsonIgnore // Evita la serialización de la relación para prevenir ciclos
+    private User tenant;
 
     @ManyToOne
     @JoinColumn(name = "property_id", nullable = false) // Relación con la entidad Property
-    private Property property; // La propiedad es una entidad Property
+    @JsonIgnore // Evita la serialización de la relación para prevenir ciclos
+    private Property property;
     
     @OneToMany(mappedBy = "lease")
+    @JsonIgnore // Evita la serialización de la lista para prevenir ciclos
     private List<Payment> payments;
 
     private LocalDate startDate;
@@ -66,6 +66,14 @@ public class Lease {
 
     public void setProperty(Property property) {
         this.property = property;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 
     public LocalDate getStartDate() {

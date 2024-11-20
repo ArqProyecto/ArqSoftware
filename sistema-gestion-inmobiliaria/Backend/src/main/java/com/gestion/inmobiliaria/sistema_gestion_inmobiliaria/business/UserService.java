@@ -8,6 +8,7 @@ import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.dataaccess.UserRepo
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.exceptions.AuthenticationException;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.exceptions.UserAlreadyExistsException;
 import com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance.User;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 @Service
 public class UserService {
@@ -31,5 +32,9 @@ public class UserService {
             throw new UserAlreadyExistsException("El nombre de usuario ya está en uso");
         }
         userRepository.save(user); // Guarda el nuevo usuario
+    }
+    public User getUserById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        return user.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));  // Lanza una excepción si no se encuentra el usuario
     }
 }
