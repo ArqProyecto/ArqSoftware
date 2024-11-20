@@ -41,4 +41,23 @@
         <input type="date" id="endDate" placeholder="Fecha de Fin">
         <input type="number" step="0.01" id="rentAmount" placeholder="Monto del Alquiler">
         <button id="createLeaseBtn" class="btn">Crear Arrendamiento</button>
-        <div class="
+        <div class="response" id="createLeaseResponse"></div>
+      </div>
+
+      <!-- Eliminar arrendamiento por ID -->
+      <div class="action">
+        <h2>Eliminar Arrendamiento</h2>
+        <input type="number" id="deleteLeaseId" placeholder="ID del Arrendamiento a Eliminar">
+        <button id="deleteLeaseBtn" class="btn">Eliminar</button>
+        <div class="response" id="deleteLeaseResponse"></div>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Inmobiliaria. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+  <script src="script-lease.js"></script>
+</body>
+</html>

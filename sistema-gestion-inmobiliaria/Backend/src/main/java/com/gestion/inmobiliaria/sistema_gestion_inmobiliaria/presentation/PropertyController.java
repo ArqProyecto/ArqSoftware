@@ -21,6 +21,7 @@ public class PropertyController {
     @PostMapping
     public ResponseEntity<String> createProperty(@Valid @RequestBody Property property) {
         try {
+            System.out.println("Objeto recibido: " + property);
             Property createdProperty = propertyService.createProperty(property);
             return ResponseEntity.status(HttpStatus.CREATED).body("Propiedad creada con éxito.");
         } catch (IllegalArgumentException e) {

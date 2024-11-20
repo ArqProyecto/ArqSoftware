@@ -32,7 +32,7 @@ propertyForm.addEventListener('submit', async (event) => {
   const isAvailable = document.getElementById('isAvailable').value === 'true' ? true : false;
 
   const property = { address, price, isAvailable };
-
+  console.log(property);
   try {
     const response = id 
       ? await fetch(`${apiUrl}/${id}`, { 

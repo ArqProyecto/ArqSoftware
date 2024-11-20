@@ -1,5 +1,6 @@
 package com.gestion.inmobiliaria.sistema_gestion_inmobiliaria.persistance;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,7 @@ public class Property {
 
     private String address;
     private double price;
+    @JsonProperty("isAvailable")
     private Boolean isAvailable;
 
     // Constructor vacío (requerido para frameworks de persistencia)
@@ -55,4 +57,14 @@ public class Property {
     public void setAvailable(Boolean isAvailable) {
         this.isAvailable = isAvailable;
     }
+    @Override
+    public String toString() {
+        return "Property{" +
+                "id=" + id +
+                ", address='" + address + '\'' +
+                ", price=" + price +
+                ", isAvailable=" + isAvailable +
+                '}';
+    }
+
 }
