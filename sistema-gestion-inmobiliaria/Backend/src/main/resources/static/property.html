@@ -5,15 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestión de Propiedades</title>
   <link rel="stylesheet" href="styles-property.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <h1>Gestión de Propiedades</h1>
+    <div class="container">
+      <h1>Gestión de Propiedades</h1>
+    </div>
   </header>
   
   <main class="container">
     <!-- Formulario para agregar/editar inmuebles -->
-    <div class="property-form">
+    <section class="property-form">
       <h2>Agregar/Editar Propiedad</h2>
       <form id="propertyForm">
         <input type="hidden" id="propertyId" value="">
@@ -26,17 +30,19 @@
         </select>
         <button type="submit" class="btn">Guardar</button>
       </form>
-    </div>
+    </section>
 
     <!-- Lista de inmuebles -->
-    <div class="property-list">
+    <section class="property-list">
       <h2>Listado de Propiedades</h2>
       <ul id="propertyList"></ul>
-    </div>
+    </section>
   </main>
 
   <footer>
-    <p>&copy; 2024 Gestión de Propiedades</p>
+    <div class="container">
+      <p>&copy; 2024 Gestión de Propiedades</p>
+    </div>
   </footer>
 
   <script src="script-property.js"></script>

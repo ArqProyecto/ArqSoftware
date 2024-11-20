@@ -16,7 +16,7 @@ async function loadProperties() {
         <button onclick="deleteProperty(${property.id})">Eliminar</button>
         <button onclick="editProperty(${property.id}, '${property.address}', ${property.price}, ${property.isAvailable})">Editar</button>
       `;
-      propertyList.appendChild(li);
+      propertyList.appendChild(li); 
     });
   } catch (error) {
     alert('Error cargando propiedades');
@@ -29,7 +29,7 @@ propertyForm.addEventListener('submit', async (event) => {
   const id = document.getElementById('propertyId').value;
   const address = document.getElementById('address').value;
   const price = parseFloat(document.getElementById('price').value);
-  const isAvailable = document.getElementById('isAvailable').value === 'true';
+  const isAvailable = document.getElementById('isAvailable').value === 'true' ? true : false;
 
   const property = { address, price, isAvailable };
 
