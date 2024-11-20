@@ -3,46 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inmobiliaria</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #2c3e50;
-      color: #ecf0f1;
-      padding: 20px;
-      text-align: center;
-    }
-    main {
-      text-align: center;
-      margin-top: 50px;
-    }
-    a {
-      display: inline-block;
-      margin: 15px;
-      padding: 15px 25px;
-      color: #fff;
-      background-color: #3498db;
-      text-decoration: none;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-    a:hover {
-      background-color: #2980b9;
-    }
-  </style>
+  <title>Inmobiliaria - Inicio</title>
+  <link rel="stylesheet" href="styles-index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <h1>Bienvenido a la Inmobiliaria</h1>
+    <div class="container">
+      <h1>Bienvenido a la Inmobiliaria</h1>
+    </div>
   </header>
   <main>
-    <h2>Seleccione una opción</h2>
-    <a href="login.html">Iniciar Sesión</a>
-    <a href="register.html">Registrar Usuario</a>
+    <div class="container">
+      <h2>Seleccione una opción</h2>
+      <div class="button-group">
+        <a href="login.html" class="btn">Iniciar Sesión</a>
+        <a href="register.html" class="btn">Registrar Usuario</a>
+      </div>
+    </div>
   </main>
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Inmobiliaria. Todos los derechos reservados.</p>
+    </div>
+  </footer>
 </body>
 </html>

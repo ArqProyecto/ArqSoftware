@@ -1,223 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Pagos</title>
-    <style>
-        /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-
-        header {
-            background-color: #007BFF;
-            color: white;
-            padding: 1em 0;
-            text-align: center;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 1.8em;
-        }
-
-        nav {
-            margin-top: 1em;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 1em;
-            font-weight: bold;
-        }
-
-        nav a.active {
-            text-decoration: underline;
-        }
-
-        main {
-            padding: 2em;
-            max-width: 800px;
-            margin: auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        section {
-            margin-bottom: 2em;
-        }
-
-        h2 {
-            color: #007BFF;
-            margin-bottom: 0.5em;
-        }
-
-        label {
-            display: block;
-            margin-top: 1em;
-            font-weight: bold;
-        }
-
-        input, select, button {
-            display: block;
-            width: 100%;
-            padding: 0.5em;
-            margin-top: 0.5em;
-            font-size: 1em;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        div#processPaymentResult, div#getPaymentResult {
-            margin-top: 1em;
-            padding: 1em;
-            background-color: #e9ecef;
-            border-left: 5px solid #007BFF;
-            border-radius: 4px;
-        }
-
-        div#processPaymentResult p, div#getPaymentResult p {
-            margin: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="styles-payment.css">
 </head>
 <body>
     <header>
-        <h1>Gestión de Pagos</h1>
-        <nav>
-            <a href="home.html">Inicio</a>
-            
-        </nav>
+        <div class="container">
+            <h1>Gestión de Pagos</h1>
+        </div>
     </header>
     
     <main>
-        <!-- Sección para procesar un pago -->
-        <section>
-            <h2>Procesar Pago</h2>
-            <form id="processPaymentForm">
-                <label for="userId">ID del Usuario:</label>
-                <input type="number" id="userId" name="userId" required>
-                
-                <label for="amount">Monto:</label>
-                <input type="number" step="0.01" id="amount" name="amount" required>
-                
-                <label for="paymentMethod">Método de Pago:</label>
-                <select id="paymentMethod" name="paymentMethod" required>
-                    <option value="Tarjeta">Tarjeta</option>
-                    <option value="Transferencia">Transferencia</option>
-                    <option value="Efectivo">Efectivo</option>
-                </select>
-                
-                <button type="submit">Procesar Pago</button>
-            </form>
-            <div id="processPaymentResult"></div>
-        </section>
-        
-        <!-- Sección para buscar un pago -->
-        <section>
-            <h2>Buscar Pago</h2>
-            <form id="getPaymentForm">
-                <label for="paymentId">ID del Pago:</label>
-                <input type="number" id="paymentId" name="paymentId" required>
-                <button type="submit">Buscar</button>
-            </form>
-            <div id="getPaymentResult"></div>
-        </section>
+        <div class="container">
+            <!-- Sección para procesar un pago -->
+            <section>
+                <h2>Procesar Pago</h2>
+                <form id="processPaymentForm">
+                    <label for="userId">ID del Usuario:</label>
+                    <input type="number" id="userId" name="userId" required>
+                    
+                    <label for="amount">Monto:</label>
+                    <input type="number" step="0.01" id="amount" name="amount" required>
+                    
+                    <label for="paymentMethod">Método de Pago:</label>
+                    <select id="paymentMethod" name="paymentMethod" required>
+                        <option value="Tarjeta">Tarjeta</option>
+                        <option value="Transferencia">Transferencia</option>
+                        <option value="Efectivo">Efectivo</option>
+                    </select>
+                    
+                    <button type="submit" class="btn">Procesar Pago</button>
+                </form>
+                <div id="processPaymentResult"></div>
+            </section>
+            
+            <!-- Sección para buscar un pago -->
+            <section>
+                <h2>Buscar Pago</h2>
+                <form id="getPaymentForm">
+                    <label for="paymentId">ID del Pago:</label>
+                    <input type="number" id="paymentId" name="paymentId" required>
+                    <button type="submit" class="btn">Buscar</button>
+                </form>
+                <div id="getPaymentResult"></div>
+            </section>
+        </div>
     </main>
-    
-    <script>
-        // Procesar Pago
-        document.getElementById("processPaymentForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            
-            const userId = document.getElementById("userId").value;
-            const amount = document.getElementById("amount").value;
-            const paymentMethod = document.getElementById("paymentMethod").value;
-            
-            fetch("http://localhost:8080/api/payments/process", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    userId: parseInt(userId),
-                    amount: parseFloat(amount),
-                    paymentMethod: paymentMethod
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById("processPaymentResult").innerHTML = `
-                    <p>Pago procesado exitosamente:</p>
-                    <ul>
-                        <li>ID del Pago: ${data.id}</li>
-                        <li>Monto: ${data.amount}</li>
-                        <li>Método: ${data.paymentMethod}</li>
-                        <li>Estado: ${data.status}</li>
-                    </ul>
-                `;
-            })
-            .catch(error => {
-                document.getElementById("processPaymentResult").innerHTML = `
-                    <p>Error al procesar el pago: ${error.message}</p>
-                `;
-            });
-        });
 
-        // Obtener Pago por ID
-        document.getElementById("getPaymentForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            
-            const paymentId = document.getElementById("paymentId").value;
-            
-            fetch(`http://localhost:8080/api/payments/${paymentId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    document.getElementById("getPaymentResult").innerHTML = `
-                        <p>Pago encontrado:</p>
-                        <ul>
-                            <li>ID del Pago: ${data.id}</li>
-                            <li>Monto: ${data.amount}</li>
-                            <li>Método: ${data.paymentMethod}</li>
-                            <li>Estado: ${data.status}</li>
-                        </ul>
-                    `;
-                })
-                .catch(error => {
-                    document.getElementById("getPaymentResult").innerHTML = `
-                        <p>Error al buscar el pago: ${error.message}</p>
-                    `;
-                });
-        });
-    </script>
+    <footer>
+        <p>&copy; 2024 Gestión de Pagos. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script-payment.js"></script>
 </body>
 </html>
