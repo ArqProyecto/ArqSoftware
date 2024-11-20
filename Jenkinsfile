@@ -47,18 +47,27 @@ pipeline {
                         
                         // Eliminar el contenedor si ya existe
                         bat """
-                        docker ps -a -q --filter "name=${containerName}" | findstr . && docker rm -f ${containerName} || echo "No container to remove"
+                        docker ps -a -q --filter "name=${containerName}" | findstr . >nul && docker rm -f ${containerName} || (echo "No container to remove" & exit 0)
                         """
                         
                         // Construir la imagen Docker
-                        bat "docker build -t ${imageName} ."
-                        
+                        try {
+                            echo "Building Docker image: ${imageName}"
+                            bat "docker build -t ${imageName} ."
+                        } catch (Exception e) {
+                            error "Failed to build Docker image: ${e.message}"
+                        }
+        
                         // Ejecutar el contenedor en Docker
-                        bat "docker run -d -p 8082:8082 --name ${containerName} ${imageName}"
+                        try {
+                            echo "Running Docker container: ${containerName}"
+                            bat "docker run -d -p 8082:8082 --name ${containerName} ${imageName}"
+                        } catch (Exception e) {
+                            error "Failed to run Docker container: ${e.message}"
+                        }
                     }
                 }
             }
         }
-
     }
 }
